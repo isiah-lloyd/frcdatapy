@@ -1,7 +1,7 @@
 import requests
 import json
-AUTH_TOKEN = 'Token communitysampletoken'
-BASE_URL = 'http://private-1246e-frceventsprelimapitraffic.apiary-proxy.com/api/'
+AUTH_TOKEN = ''
+BASE_URL = ''
 HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
 ###HELPER FUNCTIONS###
 class APIerror(Exception):
