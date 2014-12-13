@@ -19,7 +19,13 @@ def verifyYear(season):
 		raise ValueError('Year must be an integer')
 	return 1
 def verifyTournamentLevel(tournamentLevel):
-	if(type(tournamentLevel))
+	if(type(tournamentLevel) is str):
+		if (tournamentLevel == 'qual' or tournamentLevel == 'elim'):
+			return 1
+		else:
+			raise ValueError('tournamentLevel must either be "qual" or "elim"')
+	else:
+		raise ValueError('tournamentLevel must be a string')
 ###API CLASSES###
 def getTeamInfo(teamNumber,season):
 	"""
@@ -55,12 +61,13 @@ def getEventSchedule(eventCode, tournamentLevel, teamNumber=None):
 	getEventSchedule('ilil, 'qual')  #Without teamnumber
 	getEventSchedule('ilil', 'qual', )
 	"""
-	if(type(eventCode) is str and type(tournamentLevel) is str):
+	
+	if(type(eventCode) is str):
 		if teamNumber == None:
 			payload = {}
 		else:
 			payload = {'teamNumber': teamNumber }
-		r = requests.get(BASE_URL+"schedule/2014/" + eventCode + "/" + tournamentLevel, params=payload, headers=HEADERS)
+		r = requests.get(BASE_URL+"schedule"+str(season) + eventCode + "/" + tournamentLevel, params=payload, headers=HEADERS)
 		if(r.status_code != 200):
 			r.raise_for_status()
 		else:
@@ -68,9 +75,34 @@ def getEventSchedule(eventCode, tournamentLevel, teamNumber=None):
 			return eventSchedule
 	else:
 		raise ValueError('eventCode and/or tournamentLevel must be a string')
-def getTeamMatchResults(season,eventCode,teamNumber, tournamentLevel='qual', start=None, end=None):
+def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, matchNumber=None, start=None, end=None):
 	payload = {}
 	verifyYear(season)
+	if(tournamentLevel is not None):
+		verifyTournamentLevel(tournamentLevel)
+	if(matchNumber != None or start != None or end != None):
+		if(tournamentLevel == None):
+			raise ValueError('If you supply a matchNumber, start, or end parameter then you must supply a tournamentLevel')
+	if(teamNumber is not None and matchNumber is not None):
+		raise ValueError('You can not supply both a teamNumber and a matchNumber')
+	if(teamNumber is not None):
+		payload['teamNumber'] = teamNumber
+	if(tournamentLevel is not None):
+		payload['tournamentLevel'] = tournamentLevel
+	if(matchNumber is not None):
+		payload['matchNumber'] = matchNumber
+	if(start is not None):
+		payload['start'] = start
+	if(end is not None):
+		payload['end'] = end
+	r = requests.get(BASE_URL+"/matches/"+str(season)+ "/"+eventCode, params=payload, headers=HEADERS)
+	if(r.status_code != 200):
+		r.raise_for_status()
+	else:
+		matchResults = json.loads(r.text)
+		return matchResults
+	
+		
 	
 	
 
