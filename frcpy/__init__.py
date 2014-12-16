@@ -1,5 +1,4 @@
 import requests
-import json
 AUTH_TOKEN = ''
 BASE_URL = ''
 HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
@@ -42,7 +41,7 @@ def getTeamInfo(teamNumber,season):
 	if(r.status_code != 200):
 		r.raise_for_status()
 	else:
-		teamInfo = json.loads(r.text)
+		teamInfo = r.json
 		if(teamInfo["teamCountTotal"] == 0):
 			raise APIerror('No team found using that number')
 		else:
@@ -71,7 +70,7 @@ def getEventSchedule(eventCode, tournamentLevel, teamNumber=None):
 		if(r.status_code != 200):
 			r.raise_for_status()
 		else:
-			eventSchedule = json.loads(r.text)
+			eventSchedule = r.json
 			return eventSchedule
 	else:
 		raise ValueError('eventCode and/or tournamentLevel must be a string')
@@ -99,7 +98,7 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 	if(r.status_code != 200):
 		r.raise_for_status()
 	else:
-		matchResults = json.loads(r.text)
+		matchResults = r.json
 		return matchResults
 	
 		
