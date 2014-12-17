@@ -39,7 +39,7 @@ def getTeamInfo(teamNumber,season):
 	if(r.status_code != 200):
 		r.raise_for_status()
 	else:
-		teamInfo = r.json
+		teamInfo = r.json()
 		if(teamInfo["teamCountTotal"] == 0):
 			raise APIerror('No team found using that number')
 		else:
@@ -68,7 +68,7 @@ def getEventSchedule(eventCode, tournamentLevel, teamNumber=None):
 		if(r.status_code != 200):
 			r.raise_for_status()
 		else:
-			eventSchedule = r.json
+			eventSchedule = r.json()
 			return eventSchedule
 	else:
 		raise ValueError('eventCode and/or tournamentLevel must be a string')
@@ -96,7 +96,7 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 	if(r.status_code != 200):
 		r.raise_for_status()
 	else:
-		matchResults = r.json
+		matchResults = r.json()
 		return matchResults
 	
 def setUp(authToken, baseUrl):
