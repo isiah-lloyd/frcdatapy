@@ -52,6 +52,3 @@ docs/_build/
 
 # PyBuilder
 target/
-
-#Module specific
-frcpy/config.ini
