@@ -1,4 +1,5 @@
 import requests
+import ConfigParser
 AUTH_TOKEN = ''
 BASE_URL = ''
 HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
@@ -101,6 +102,10 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 		matchResults = r.json
 		return matchResults
 	
+def main():
+	config = ConfigParser.ConfigParser()
+	config.read('config.ini')
+
 		
 	
 	
