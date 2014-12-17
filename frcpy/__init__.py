@@ -1,8 +1,5 @@
 import requests
 import ConfigParser
-AUTH_TOKEN = ''
-BASE_URL = ''
-HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
 ###HELPER FUNCTIONS###
 class APIerror(Exception):
 	pass
@@ -102,9 +99,14 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 		matchResults = r.json
 		return matchResults
 	
-def main():
-	config = ConfigParser.ConfigParser()
-	config.read('config.ini')
+def setUp(authToken, baseUrl):
+	global AUTH_TOKEN
+	global BASE_URL
+	global HEADERS
+	AUTH_TOKEN = authToken
+	BASE_URL = baseUrl
+	HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
+
 
 		
 	
