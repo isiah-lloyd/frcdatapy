@@ -1,5 +1,4 @@
 import requests
-import ConfigParser
 ###HELPER FUNCTIONS###
 class APIerror(Exception):
 	pass
