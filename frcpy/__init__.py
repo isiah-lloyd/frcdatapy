@@ -106,6 +106,14 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 	else:
 		matchResults = r.json()
 		return matchResults
+def getDistrictListings(season):
+	verifyYear(season)
+	r = requests.get(BASE_URL+str(season)+"/districts", headers=HEADERS)
+	if(r.status_code != 200):
+		r.raise_for_status()
+	else:
+		districtListings = r.json()
+	return districtListings
 	
 def setUp(authToken, baseUrl):
 	global AUTH_TOKEN
