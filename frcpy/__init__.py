@@ -23,6 +23,15 @@ def verifyTournamentLevel(tournamentLevel):
 	else:
 		raise ValueError('tournamentLevel must be a string')
 ###API CLASSES###
+def getAncillary():
+	"""
+	"""
+	r = requests.get(BASE_URL, headers=HEADERS)
+	if(r.status_code != 200):
+		r.raise_for_status()
+	else:
+		Ancillary = r.json()
+		return Ancillary
 def getTeamInfo(teamNumber,season):
 	"""
 	Request info of an indivdual team
