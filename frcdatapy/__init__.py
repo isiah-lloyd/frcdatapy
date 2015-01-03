@@ -1,7 +1,5 @@
 import requests
 ###HELPER FUNCTIONS###
-class APIerror(Exception):
-	pass
 def verifyYear(season):
 	'''
 	This class is to make sure the year is valid according the the API specs
@@ -106,6 +104,14 @@ def getMatchResults(season,eventCode,teamNumber = None, tournamentLevel=None, ma
 	else:
 		matchResults = r.json()
 		return matchResults
+def getSeasonSummary(season):
+	verifyYear(season)
+	r = requests.get(BASE_URL+str(season), headers=HEADERS)
+	if(r.status_code != 200):
+		r.raise_for_status()
+	else:
+		seasonSummary = r.json()
+	return seasonSummary
 def getDistrictListings(season):
 	verifyYear(season)
 	r = requests.get(BASE_URL+str(season)+"/districts", headers=HEADERS)
