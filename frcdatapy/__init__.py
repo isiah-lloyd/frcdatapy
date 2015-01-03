@@ -117,7 +117,26 @@ def get_event_listings(season, eventCode=None, districtCode=None, excludeDistric
     if(eventCode != None):
         if(districtCode != None or excludeDistrict != False):
             raise ValueError('You cannot name an eventCode and another optional parameter')
-        
+        else:
+            payload = {'eventCode': eventCode}
+            r = requests.get(BASE_URL+str(season)+"/events", params=payload, headers=HEADERS)
+            event_listings = r.json()
+            return event_listings
+    if(excludeDistrict == True):
+        if(districtCode != None):
+            raise ValueError('You cannot exclude districts but also define a districtCode')
+        r = requests.get(BASE_URL+str(season)+"/events?excludeDistrict=true", headers=HEADERS)
+        event_listings = r.json()
+        return event_listings
+    if(districtCode != None):
+        r = requests.get(BASE_URL+str(season)+"/events?districtCode="+str(districtCode), headers=HEADERS)
+        event_listings = r.json()
+        return event_listings
+    else:
+        r = requests.get(BASE_URL+str(season)+"/events", headers=HEADERS)
+        event_listings = r.json()
+        return event_listings
+
 
 def get_district_listings(season):
     verifyYear(season)
