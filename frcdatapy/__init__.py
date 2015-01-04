@@ -1,6 +1,6 @@
 import requests
 ###HELPER FUNCTIONS###
-def verifyYear(season):
+def verify_year(season):
     '''
     This class is to make sure the year is valid according the the API specs
     '''
@@ -31,6 +31,15 @@ def get_ancillary():
     else:
         Ancillary = r.json()
         return Ancillary
+def get_event_alliances(season, eventCode):
+    verify_year(season)
+    if(len(eventCode) >= 3):
+        r = requests.get(BASE_URL+'alliances/'+str(season)+'/'+eventCode, headers=HEADERS)
+        if(r.status_code != 200):
+            r.raise_for_status()
+        else:
+            event_alliances = r.json()
+            return event_alliances
 def get_team_info(teamNumber,season):
     """
     Request info of an individual team
@@ -40,7 +49,7 @@ def get_team_info(teamNumber,season):
     Returns:
     json encoded team info. See API docs for what it return
     """
-    verifyYear(season)
+    verify_year(season)
     payload = {'teamNumber': teamNumber}
     r = requests.get(BASE_URL+str(season)+"/teams", params=payload, headers=HEADERS)
     if(r.status_code != 200):
@@ -80,7 +89,7 @@ def get_event_schedule(eventCode, tournamentLevel, teamNumber=None):
         raise ValueError('eventCode and/or tournamentLevel must be a string')
 def get_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, matchNumber=None, start=None, end=None):
     payload = {}
-    verifyYear(season)
+    verify_year(season)
     if(tournamentLevel is not None):
         verifyTournamentLevel(tournamentLevel)
     if(matchNumber != None or start != None or end != None):
@@ -105,7 +114,7 @@ def get_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, 
         matchResults = r.json()
         return matchResults
 def get_season_summary(season):
-    verifyYear(season)
+    verify_year(season)
     r = requests.get(BASE_URL+str(season), headers=HEADERS)
     if(r.status_code != 200):
         r.raise_for_status()
@@ -113,7 +122,7 @@ def get_season_summary(season):
         seasonSummary = r.json()
     return seasonSummary
 def get_event_listings(season, eventCode=None, districtCode=None, excludeDistrict=False):
-    verifyYear(season)
+    verify_year(season)
     if(eventCode != None):
         if(districtCode != None or excludeDistrict != False):
             raise ValueError('You cannot name an eventCode and another optional parameter')
@@ -139,7 +148,7 @@ def get_event_listings(season, eventCode=None, districtCode=None, excludeDistric
 
 
 def get_district_listings(season):
-    verifyYear(season)
+    verify_year(season)
     r = requests.get(BASE_URL+str(season)+"/districts", headers=HEADERS)
     if(r.status_code != 200):
         r.raise_for_status()
