@@ -145,7 +145,19 @@ def get_event_listings(season, eventCode=None, districtCode=None, excludeDistric
         r = requests.get(BASE_URL+str(season)+"/events", headers=HEADERS)
         event_listings = r.json()
         return event_listings
-
+def get_event_rankings(season, eventCode, top=None):
+    verify_year(season)
+    if (len(eventCode) >= 3):
+        if(top != None):
+            payload = {'top': top}
+            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, params=payload, headers=HEADERS)
+        else:
+            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, headers=HEADERS)
+    if(r.status_code != 200):
+        r.raise_for_status()
+    else:
+        event_rankings = r.json()
+        return event_rankings
 
 def get_district_listings(season):
     verify_year(season)
