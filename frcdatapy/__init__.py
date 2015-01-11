@@ -158,6 +158,19 @@ def get_event_rankings(season, eventCode, top=None):
     else:
         event_rankings = r.json()
         return event_rankings
+def get_event_awards(season, eventCode, teamNumber=None):
+    verify_year(season)
+    if(teamNumber != None):
+        payload = {'teamNumber': teamNumber}
+        r = requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), params=payload, headers=HEADERS)
+    else:
+        r =requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), headers=HEADERS)
+    if(r.status_code != 200):
+        r.raise_for_status()
+    else:
+        eventAwards = r.json()
+    return eventAwards 
+
 
 def get_district_listings(season):
     verify_year(season)
