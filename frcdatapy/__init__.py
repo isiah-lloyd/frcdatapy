@@ -14,7 +14,7 @@ def verify_year(season):
     return 1
 def verify_tournament_level(tournamentLevel):
     if(type(tournamentLevel) is str):
-        if (tournamentLevel == 'qual' or tournamentLevel == 'elim'):
+        if (tournamentLevel == 'qual' or tournamentLevel == 'playoff'):
             return 1
         else:
             raise ValueError('tournamentLevel must either be "qual" or "elim"')
