@@ -180,10 +180,15 @@ def get_district_listings(season):
     else:
         districtListings = r.json()
     return districtListings 
-def set_up(authToken, baseUrl):
-    global AUTH_TOKEN
+def set_up(baseUrl, authToken=None):
     global BASE_URL
     global HEADERS
-    AUTH_TOKEN = authToken
-    BASE_URL = baseUrl
-    HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
+    global AUTH_TOKEN
+    if(authToken != None):
+        AUTH_TOKEN = authToken
+        BASE_URL = baseUrl
+        HEADERS = {'Accept': 'application/json'}
+    else:
+        AUTH_TOKEN = authToken
+        BASE_URL = baseUrl
+        HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
