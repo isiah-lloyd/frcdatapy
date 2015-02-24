@@ -25,7 +25,7 @@ def get_ancillary():
     """
     Returns basic info about the API. 
     """
-    r = requests.get(BASE_URL, headers=HEADERS)
+    r = requests.get(BASE_URL, headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -34,7 +34,7 @@ def get_ancillary():
 def get_event_alliances(season, eventCode):
     verify_year(season)
     if(len(eventCode) >= 3):
-        r = requests.get(BASE_URL+'alliances/'+str(season)+'/'+eventCode, headers=HEADERS)
+        r = requests.get(BASE_URL+'alliances/'+str(season)+'/'+eventCode, headers=HEADERS, auth=AUTH)
         if(r.status_code != 200):
             r.raise_for_status()
         else:
@@ -51,7 +51,7 @@ def get_team_info(teamNumber,season):
     """
     verify_year(season)
     payload = {'teamNumber': teamNumber}
-    r = requests.get(BASE_URL+str(season)+"/teams", params=payload, headers=HEADERS)
+    r = requests.get(BASE_URL+str(season)+"/teams", params=payload, headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -79,7 +79,7 @@ def get_event_schedule(eventCode, tournamentLevel, teamNumber=None):
             payload = {}
         else:
             payload = {'teamNumber': teamNumber }
-        r = requests.get(BASE_URL+"schedule"+str(season)+eventCode+"/"+tournamentLevel, params=payload, headers=HEADERS)
+        r = requests.get(BASE_URL+"schedule"+str(season)+eventCode+"/"+tournamentLevel, params=payload, headers=HEADERS, auth=AUTH)
         if(r.status_code != 200):
             r.raise_for_status()
         else:
@@ -87,11 +87,11 @@ def get_event_schedule(eventCode, tournamentLevel, teamNumber=None):
             return eventSchedule
     else:
         raise ValueError('eventCode and/or tournamentLevel must be a string')
-def get_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, matchNumber=None, start=None, end=None):
+def get_event_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, matchNumber=None, start=None, end=None):
     payload = {}
     verify_year(season)
     if(tournamentLevel is not None):
-        verifyTournamentLevel(tournamentLevel)
+        verify_tournament_level(tournamentLevel)
     if(matchNumber != None or start != None or end != None):
         if(tournamentLevel == None):
             raise ValueError('If you supply a matchNumber, start, or end parameter then you must supply a tournamentLevel')
@@ -107,7 +107,7 @@ def get_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, 
         payload['start'] = start
     if(end is not None):
         payload['end'] = end
-    r = requests.get(BASE_URL+"/matches/"+str(season)+ "/"+eventCode, params=payload, headers=HEADERS)
+    r = requests.get(BASE_URL+"/matches/"+str(season)+ "/"+eventCode, params=payload, headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -115,7 +115,7 @@ def get_match_results(season,eventCode,teamNumber = None, tournamentLevel=None, 
         return matchResults
 def get_season_summary(season):
     verify_year(season)
-    r = requests.get(BASE_URL+str(season), headers=HEADERS)
+    r = requests.get(BASE_URL+str(season), headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -128,7 +128,7 @@ def get_event_listings(season, eventCode=None, districtCode=None, excludeDistric
             raise ValueError('You cannot name an eventCode and another optional parameter')
         else:
             payload = {'eventCode': eventCode}
-            r = requests.get(BASE_URL+str(season)+"/events", params=payload, headers=HEADERS)
+            r = requests.get(BASE_URL+str(season)+"/events", params=payload, headers=HEADERS, auth=AUTH)
             event_listings = r.json()
             return event_listings
     if(excludeDistrict == True):
@@ -138,11 +138,11 @@ def get_event_listings(season, eventCode=None, districtCode=None, excludeDistric
         event_listings = r.json()
         return event_listings
     if(districtCode != None):
-        r = requests.get(BASE_URL+str(season)+"/events?districtCode="+str(districtCode), headers=HEADERS)
+        r = requests.get(BASE_URL+str(season)+"/events?districtCode="+str(districtCode), headers=HEADERS, auth=AUTH)
         event_listings = r.json()
         return event_listings
     else:
-        r = requests.get(BASE_URL+str(season)+"/events", headers=HEADERS)
+        r = requests.get(BASE_URL+str(season)+"/events", headers=HEADERS, auth=AUTH)
         event_listings = r.json()
         return event_listings
 def get_event_rankings(season, eventCode, top=None):
@@ -150,9 +150,9 @@ def get_event_rankings(season, eventCode, top=None):
     if (len(eventCode) >= 3):
         if(top != None):
             payload = {'top': top}
-            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, params=payload, headers=HEADERS)
+            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, params=payload, headers=HEADERS, auth=AUTH)
         else:
-            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, headers=HEADERS)
+            r = requests.get(BASE_URL+'rankings/'+str(season)+'/'+eventCode, headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -162,9 +162,9 @@ def get_event_awards(season, eventCode, teamNumber=None):
     verify_year(season)
     if(teamNumber != None):
         payload = {'teamNumber': teamNumber}
-        r = requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), params=payload, headers=HEADERS)
+        r = requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), params=payload, headers=HEADERS, auth=AUTH)
     else:
-        r =requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), headers=HEADERS)
+        r =requests.get(BASE_URL+"/awards/"+str(season)+"/"+str(eventCode), headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
@@ -174,21 +174,24 @@ def get_event_awards(season, eventCode, teamNumber=None):
 
 def get_district_listings(season):
     verify_year(season)
-    r = requests.get(BASE_URL+str(season)+"/districts", headers=HEADERS)
+    r = requests.get(BASE_URL+str(season)+"/districts", headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
         districtListings = r.json()
     return districtListings 
-def set_up(baseUrl, authToken=None):
+
+def set_up(baseUrl, username=None, authToken=None):
     global BASE_URL
     global HEADERS
-    global AUTH_TOKEN
-    if(authToken != None):
-        AUTH_TOKEN = authToken
+    global AUTH
+    if(username != None and authToken != None):
+        BASE_URL = baseUrl
+        HEADERS = {'Accept': 'application/json', 'Authorization': authToken}
+        AUTH = (username, authToken)
+    elif(username == None and authToken ==  None):
         BASE_URL = baseUrl
         HEADERS = {'Accept': 'application/json'}
+        AUTH = ()
     else:
-        AUTH_TOKEN = authToken
-        BASE_URL = baseUrl
-        HEADERS = {'Accept': 'application/json', 'Authorization': AUTH_TOKEN}
+        raise ValueError("Your set_up request was malformed. It either need both a username and authToken or none of those (if working on the mock server)")
