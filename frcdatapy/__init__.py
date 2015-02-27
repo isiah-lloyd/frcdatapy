@@ -40,26 +40,27 @@ def get_event_alliances(season, eventCode):
         else:
             event_alliances = r.json()
             return event_alliances
-def get_team_info(teamNumber,season):
-    """
-    Request info of an individual team
-    Input:
-    teamNumber = the team number that you wish to return info on
-    season = year of info you would like to return; must be valid (greater then 2014 and less then the current year)
-    Returns:
-    json encoded team info. See API docs for what it return
-    """
+def get_team_listings(season, teamNumber=None, eventCode=None, districtCode=None, page=None):
+    if(teamNumber != None and eventCode != None):
+        raise ValueError('You can\'t supply both a teamnumber and an eventCode')
+    if(teamNumber != None and districtCode != None):
+        raise ValueError('You can\'t supply both a teamnumber and an districtCode')
     verify_year(season)
-    payload = {'teamNumber': teamNumber}
-    r = requests.get(BASE_URL+str(season)+"/teams", params=payload, headers=HEADERS, auth=AUTH)
+    payload = {}
+    if (teamNumber != None):
+        payload['teamNumber'] = teamNumber
+    if (eventCode != None):
+        payload['eventCode'] = eventCode
+    if (districtCode != None):
+        payload['districtCode'] = districtCode
+    if (page != None):
+        payload['page'] = page
+    r = requests.get(BASE_URL+"teams/"+str(season), params=payload, headers=HEADERS, auth=AUTH)
     if(r.status_code != 200):
         r.raise_for_status()
     else:
-        teamInfo = r.json()
-        if(teamInfo["teamCountTotal"] == 0):
-            raise APIerror('No team found using that number')
-        else:
-            return teamInfo['teams'][0]
+        teamListings = r.json()
+        return teamListings
 def get_event_schedule(eventCode, tournamentLevel, teamNumber=None):
     """
     'The schedule API returns the match schedule for the desired tournament level of a particular event in a particular season.'
